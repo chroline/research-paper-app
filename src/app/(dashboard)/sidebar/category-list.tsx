@@ -40,6 +40,8 @@ export function CategoryList() {
     enabled: !!userId,
   });
 
+  console.log(!userId, isLoading);
+
   if (!userId || isLoading) {
     return <LoadingSkeleton />;
   }

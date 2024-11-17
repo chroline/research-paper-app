@@ -1,4 +1,10 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+
 import React from "react";
+
+import { getCategoryById } from "@/lib/services/categories";
 
 import {
   Breadcrumb,
@@ -9,7 +15,15 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-export default async function BreadcrumbSlot() {
+export default function BreadcrumbSlot({ params }: { params: { id: string } }) {
+  const { id: categoryId } = params;
+
+  const { data: category, isLoading } = useQuery({
+    queryKey: ["category", categoryId],
+    queryFn: () => getCategoryById(categoryId),
+    staleTime: 1000 * 60 * 5,
+  });
+
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -18,8 +32,9 @@ export default async function BreadcrumbSlot() {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>Category</BreadcrumbItem>
+        <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage>Saved Papers</BreadcrumbPage>
+          <BreadcrumbPage>{isLoading ? "..." : category!.emoji + " " + category!.name}</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
